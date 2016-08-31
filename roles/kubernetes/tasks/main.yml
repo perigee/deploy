@@ -6,7 +6,7 @@
 
 - name: install
   yum: name={{ item }} update_cache=yes enablerepo=virt7-docker-common-release state=present
-  with_item: 
+  with_items: 
     - kubernetes
     - etcd
 
@@ -16,10 +16,10 @@
     - "{{ }}  centos-master"
     - "{{ }}  centos-minion"
 
-- name: edit config
-  lineinfile: path=/etc/kubernetes/config line={{ item }}
-  with_items:
-    - 
+#- name: edit config
+#  lineinfile: path=/etc/kubernetes/config line={{ item }}
+#  with_items:
+#    - 
 
 - name: disable service
   command: systemctl disable iptables-services firewalled

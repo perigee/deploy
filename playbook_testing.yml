@@ -4,4 +4,4 @@
   gather_facts: no
   remote_user: yes
   roles:
-    - cert
+    - kubernetes
