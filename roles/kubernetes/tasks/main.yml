@@ -21,3 +21,11 @@
   with_items:
     - 
 
+- name: disable service
+  command: systemctl disable iptables-services firewalled
+
+- name: disable service
+  command: systemctl stop iptables-services firewalld
+
+
+
