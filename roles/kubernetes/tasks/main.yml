@@ -5,13 +5,18 @@
   template: src=virt7-docker.repo.j2 dest=/etc/yum.repos.d/virt7-docker-common-release.repo mode=0600
 
 - name: update pkg
-  yum: name=lvm2 state=latest
-
-- name: install
-  yum: name={{ item }} update_cache=yes enablerepo=virt7-docker-common-release state=present
-  with_items: 
-    - kubernetes
+  yum: name={{ item }} state=latest update_cache=yes disable_gpg_check=yes
+  with_items:
     - etcd
+    - lvm2
+
+#- name: install
+#  yum: name={{ item }} update_cache=yes enablerepo=virt7-docker-common-release state=latest disable_gpg_check=yes
+#  with_items: 
+#    - kubernetes
+
+- name: command
+  command: yum -y install --enablerepo=virt7-docker-common-release kubernetes
 
 #- name: add hosts
 #  lineinfile: path=/etc/hosts line={{ item }}
@@ -29,6 +34,3 @@
 
 - name: disable service
   command: systemctl stop iptables-services firewalld
-
-
-
