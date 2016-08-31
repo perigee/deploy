@@ -4,17 +4,20 @@
 - name: add docker repo
   template: src=virt7-docker.repo.j2 dest=/etc/yum.repos.d/virt7-docker-common-release.repo mode=0600
 
+- name: update pkg
+  yum: name=lvm2 state=latest
+
 - name: install
   yum: name={{ item }} update_cache=yes enablerepo=virt7-docker-common-release state=present
   with_items: 
     - kubernetes
     - etcd
 
-- name: add hosts
-  lineinfile: path=/etc/hosts line={{ item }}
-  with_items:
-    - "{{ }}  centos-master"
-    - "{{ }}  centos-minion"
+#- name: add hosts
+#  lineinfile: path=/etc/hosts line={{ item }}
+#  with_items:
+#    - "{{ }}  centos-master"
+#    - "{{ }}  centos-minion"
 
 #- name: edit config
 #  lineinfile: path=/etc/kubernetes/config line={{ item }}
