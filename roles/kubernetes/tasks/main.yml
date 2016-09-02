@@ -11,26 +11,39 @@
     - lvm2
 
 #- name: install
-#  yum: name={{ item }} update_cache=yes enablerepo=virt7-docker-common-release state=latest disable_gpg_check=yes
+#  yum: name=kubernetes update_cache=yes enablerepo="virt7-docker-common-release" state=latest disable_gpg_check=yes
 #  with_items: 
 #    - kubernetes
+#  tags: testing
 
 - name: command
   command: yum -y install --enablerepo=virt7-docker-common-release kubernetes
 
-#- name: add hosts
-#  lineinfile: path=/etc/hosts line={{ item }}
-#  with_items:
-#    - "{{ }}  centos-master"
-#    - "{{ }}  centos-minion"
+- name: create hosts file
+  file: path=/etc/hosts state=touch mode=0700
+  tags: config
+
+- debug: msg="haha"
+  tags: testing
+
+- name: add hosts
+  lineinfile: dest=/etc/hosts line={{ item }} state=present
+  with_items:
+    - "{{ hostvars[groups['master'][0]]['groups']['master'][0] }}  centos-master"
+    - "{{ hostvars[groups['master'][0]]['groups']['minion'][0] }}  centos-minion"
+  tags: config
 
 #- name: edit config
 #  lineinfile: path=/etc/kubernetes/config line={{ item }}
 #  with_items:
 #    - 
 
-- name: disable service
-  command: systemctl disable iptables-services firewalled
+
 
 - name: disable service
-  command: systemctl stop iptables-services firewalld
+  command: systemctl disable firewalled
+  #command: systemctl disable iptables-services firewalled
+
+- name: disable service
+  command: systemctl stop firewalld
+  #command: systemctl stop iptables-services firewalld
