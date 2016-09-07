@@ -23,7 +23,7 @@
   file: path=/etc/hosts state=touch mode=0700
   tags: config
 
-- debug: msg="haha"
+- debug: msg=""
   tags: testing
 
 - name: add hosts
