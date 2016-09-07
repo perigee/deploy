@@ -7,4 +7,5 @@
   lineinfile: dest=/etc/profile line="{{ item }}" 
   with_items:
     - "export GOROOT=/home/go"
-    - "export PATH=PATH:/usr/local/go/bin:$GOROOT/bin"
+    - "export PATH=$PATH:/usr/local/go/bin:$GOROOT/bin"
+  tags: testing
