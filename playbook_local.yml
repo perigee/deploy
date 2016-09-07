@@ -1,6 +1,6 @@
 ---
 
-- hosts: all
+- hosts: localhost
   sudo: yes
   roles:
     - go
