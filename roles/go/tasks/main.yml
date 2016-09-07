@@ -6,6 +6,7 @@
 - name: set PATH
   lineinfile: dest=/etc/profile line="{{ item }}" 
   with_items:
-    - "export GOROOT=/home/go"
-    - "export PATH=$PATH:/usr/local/go/bin:$GOROOT/bin"
+    - "export GOROOT=/usr/local/go"
+    - "export GOPATH=/home/go"
+    - "export PATH=$PATH:/usr/local/go/bin:$GOPATH/bin"
   tags: testing
