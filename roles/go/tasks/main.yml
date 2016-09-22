@@ -1,12 +1,18 @@
 ---
-  
+
+- name: make folder
+  file: path=/home/go state=directory owner={{ ansible_user }} mode=0755
+
 - name: un tar
-  unarchive: src=https://storage.googleapis.com/golang/go1.7.linux-amd64.tar.gz dest=/usr/local copy=no
+  unarchive: src=https://storage.googleapis.com/golang/go{{ GOVERSION }}.linux-amd64.tar.gz dest={{ GOROOT }} copy=no
+
+- file: path=/etc/env_custom state=directory
+
+- name: create
+  tempate: src=env_go.sh.j2 dest=/etc/env_custom/env_go.sh mode=0755
+
 
 - name: set PATH
   lineinfile: dest=/etc/profile line="{{ item }}" 
   with_items:
-    - "export GOROOT=/usr/local/go"
-    - "export GOPATH=/home/go"
-    - "export PATH=$PATH:/usr/local/go/bin:$GOPATH/bin"
-  tags: testing
+    - "source /etc/env_custom/env_go.sh"
