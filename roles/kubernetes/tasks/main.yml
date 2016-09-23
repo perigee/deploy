@@ -3,21 +3,24 @@
 
 - name: add docker repo
   template: src=virt7-docker.repo.j2 dest=/etc/yum.repos.d/virt7-docker-common-release.repo mode=0600
+  tags: testing
 
 - name: update pkg
   yum: name={{ item }} state=latest update_cache=yes disable_gpg_check=yes
   with_items:
     - etcd
     - lvm2
+  tags: testing
 
-#- name: install
-#  yum: name=kubernetes update_cache=yes enablerepo="virt7-docker-common-release" state=latest disable_gpg_check=yes
-#  with_items: 
-#    - kubernetes
+- name: install
+  yum: name=kubernetes update_cache=yes enablerepo="virt7-docker-common-release" state=installed disable_gpg_check=yes
+  with_items: 
+    - kubernetes
+  tags: testing, testingx
+
+#- name: command
+#  shell: yum install --enablerepo=virt7-docker-common-release kubernetes -y
 #  tags: testing
-
-- name: command
-  command: yum -y install --enablerepo=virt7-docker-common-release kubernetes
 
 - name: create hosts file
   file: path=/etc/hosts state=touch mode=0700
@@ -33,17 +36,27 @@
     - "{{ hostvars[groups['master'][0]]['groups']['minion'][0] }}  centos-minion"
   tags: config
 
-#- name: edit config
-#  lineinfile: path=/etc/kubernetes/config line={{ item }}
-#  with_items:
-#    - 
 
-
+- name: kubernetes config
+  lineinfile: dest=/etc/kubernetes/config regexp={{ item.regex }} line={{ item.line }}
+  with_items:
+    - { "regex": "^KUBE_ETCD_SERVERS", "line": "KUBE_ETCD_SERVERS='--etcd-servers=http://centos-master:2379'"}
+    - { "regex": "^KUBE_LOGTOSTDERR", "line": "KUBE_LOGTOSTDERR='--logtostderr=true'"}
+    - { "regex": "^KUBE_LOG_LEVEL", "line": "KUBE_LOG_LEVEL=='--v=0'"}
+    - { "regex": "^KUBE_ALLOW_PRIV", "line": "KUBE_ALLOW_PRIV='--allow-privileged=false'"}
+    - { "regex": "^KUBE_MASTER", "line": "KUBE_MASTER='--master=http://centos-master:8080'"}
+  tags: config
 
 - name: disable service
-  command: systemctl disable firewalled
+  command: systemctl disable 
+  with_items:
+    - iptables
+    - firewalled
   #command: systemctl disable iptables-services firewalled
 
 - name: disable service
-  command: systemctl stop firewalld
+  command: systemctl stop {{ item }}
+  with_items:
+    - iptables
+    - firewalld
   #command: systemctl stop iptables-services firewalld

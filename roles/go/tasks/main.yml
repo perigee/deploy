@@ -1,7 +1,9 @@
 ---
   
 - name: un tar
-  unarchive: src=https://storage.googleapis.com/golang/go1.7.linux-amd64.tar.gz dest=/usr/local copy=no
+  shell: wget -qO- https://storage.googleapis.com/golang/go1.7.linux-amd64.tar.gz | tar xvz -C /usr/local 
+  tags: install
+  
 
 - name: set PATH
   lineinfile: dest=/etc/profile line="{{ item }}" 
@@ -10,3 +12,4 @@
     - "export GOPATH=/home/go"
     - "export PATH=$PATH:/usr/local/go/bin:$GOPATH/bin"
   tags: testing
+
