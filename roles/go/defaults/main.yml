@@ -3,3 +3,6 @@
 GOVERSION: "1.7.1"
 GOROOT: "/usr/local"
 GOPATH: "/home/go"
+
+PROTOCVERSION: "3.0.2"
+PROTOCPATH: "/usr/local/protoc"

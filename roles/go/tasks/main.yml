@@ -1,18 +1,32 @@
 ---
 
 - name: make folder
-  file: path=/home/go state=directory owner={{ ansible_user }} mode=0755
+  file: path=/home/go state=directory owner=jh mode=0755
+
+- file: path={{ item }} state=directory mode=0755
+  with_items:
+    - "/etc/env_custom"
+    - "{{ PROTOCPATH }}"
+  tags: tmp
+
+- name: download go and protoc
+  command: wget -O /tmp/{{ item.dest }} {{ item.url }}
+  with_items:
+    - {"url": "https://storage.googleapis.com/golang/go{{ GOVERSION }}.linux-amd64.tar.gz", "dest": "go{{ GOVERSION }}.linux-amd64.tar.gz"}
+    - {"url": "https://github.com/google/protobuf/releases/download/v{{ PROTOCVERSION }}/protoc-{{ PROTOCVERSION }}-linux-x86_64.zip", "dest":  "protoc-{{ PROTOCVERSION }}-linux-x86_64.zip"}
 
 - name: un tar
-  unarchive: src=https://storage.googleapis.com/golang/go{{ GOVERSION }}.linux-amd64.tar.gz dest={{ GOROOT }} copy=no
+  unarchive: src="/tmp/go{{ GOVERSION }}.linux-amd64.tar.gz" dest={{ GOROOT }} copy=no
 
-- file: path=/etc/env_custom state=directory
+- name: un tar
+  unarchive: src="/tmp/protoc-{{ PROTOCVERSION }}-linux-x86_64.zip" dest={{ GOROOT }} copy=no
 
 - name: create
-  tempate: src=env_go.sh.j2 dest=/etc/env_custom/env_go.sh mode=0755
-
+  template: src=env_go.sh.j2 dest=/etc/env_custom/env_go.sh mode=0755
+  tags: tmp
 
 - name: set PATH
   lineinfile: dest=/etc/profile line="{{ item }}" 
   with_items:
     - "source /etc/env_custom/env_go.sh"
+  tags: tmp
