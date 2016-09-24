@@ -19,7 +19,7 @@
   unarchive: src="/tmp/go{{ GOVERSION }}.linux-amd64.tar.gz" dest={{ GOROOT }} copy=no
 
 - name: un tar
-  unarchive: src="/tmp/protoc-{{ PROTOCVERSION }}-linux-x86_64.zip" dest={{ GOROOT }} copy=no
+  unarchive: src="/tmp/protoc-{{ PROTOCVERSION }}-linux-x86_64.zip" dest={{ PROTOCPATH }} copy=no
 
 - name: create
   template: src=env_go.sh.j2 dest=/etc/env_custom/env_go.sh mode=0755
