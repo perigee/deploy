@@ -10,7 +10,7 @@
   tags: tmp
 
 - name: download go and protoc
-  command: wget -O /tmp/{{ item.dest }} {{ item.url }}
+  command: wget --no-check-certificate -O /tmp/{{ item.dest }} {{ item.url }}
   with_items:
     - {"url": "https://storage.googleapis.com/golang/go{{ GOVERSION }}.linux-amd64.tar.gz", "dest": "go{{ GOVERSION }}.linux-amd64.tar.gz"}
     - {"url": "https://github.com/google/protobuf/releases/download/v{{ PROTOCVERSION }}/protoc-{{ PROTOCVERSION }}-linux-x86_64.zip", "dest":  "protoc-{{ PROTOCVERSION }}-linux-x86_64.zip"}
@@ -20,6 +20,7 @@
 
 - name: un tar
   unarchive: src="/tmp/protoc-{{ PROTOCVERSION }}-linux-x86_64.zip" dest={{ GOROOT }} copy=no
+  tags: tmp
 
 - name: create
   template: src=env_go.sh.j2 dest=/etc/env_custom/env_go.sh mode=0755
