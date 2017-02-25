@@ -3,23 +3,26 @@
 - name: make folder
   file: path=/home/go state=directory owner=jh mode=0755
 
+- name: clean previous go installation
+  file: path={{ GOROOT }}/go state=absent 
+
 - file: path={{ item }} state=directory mode=0755
   with_items:
     - "/etc/env_custom"
     - "{{ PROTOCPATH }}"
   tags: tmp
 
-- name: download go and protoc
-  command: wget --no-check-certificate -O /tmp/{{ item.dest }} {{ item.url }}
-  with_items:
-    - {"url": "https://storage.googleapis.com/golang/go{{ GOVERSION }}.linux-amd64.tar.gz", "dest": "go{{ GOVERSION }}.linux-amd64.tar.gz"}
-    - {"url": "https://github.com/google/protobuf/releases/download/v{{ PROTOCVERSION }}/protoc-{{ PROTOCVERSION }}-linux-x86_64.zip", "dest":  "protoc-{{ PROTOCVERSION }}-linux-x86_64.zip"}
+- name: Install go
+  unarchive:
+    src: https://storage.googleapis.com/golang/go{{ GOVERSION }}.linux-amd64.tar.gz
+    dest: "{{ GOROOT }}"
+    remote_src: yes
 
-- name: un tar
-  unarchive: src="/tmp/go{{ GOVERSION }}.linux-amd64.tar.gz" dest={{ GOROOT }} copy=no
-
-- name: un tar
-  unarchive: src="/tmp/protoc-{{ PROTOCVERSION }}-linux-x86_64.zip" dest={{ PROTOCPATH }} copy=no
+- name: Install protobuf
+  unarchive:
+    src: https://github.com/google/protobuf/releases/download/v{{ PROTOCVERSION }}/protoc-{{ PROTOCVERSION }}-linux-x86_64.zip
+    dest: "{{ PROTOCPATH }}"
+    remote_src: yes
 
 - name: create
   template: src=env_go.sh.j2 dest=/etc/env_custom/env_go.sh mode=0755
