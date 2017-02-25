@@ -1,15 +1,13 @@
 ---
 
-- name: make folder
-  file: path=/home/go state=directory owner=jh mode=0755
-
 - name: clean previous go installation
   file: path={{ GOROOT }}/go state=absent 
 
-- file: path={{ item }} state=directory mode=0755
+- file: path={{ item }} state=directory mode=0755 owner={{ ansible_user }}
   with_items:
     - "/etc/env_custom"
     - "{{ PROTOCPATH }}"
+    - "/home/go"
 
 - name: Install go
   unarchive:
