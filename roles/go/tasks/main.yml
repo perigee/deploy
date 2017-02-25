@@ -6,8 +6,11 @@
 - file: path={{ item }} state=directory mode=0755 owner={{ ansible_user }}
   with_items:
     - "/etc/env_custom"
-    - "{{ PROTOCPATH }}"
     - "/home/go"
+
+- file: path={{ item }} state=directory mode=0755
+  with_items:
+    - "{{ PROTOCPATH }}"
 
 - name: Install go
   unarchive:
@@ -19,8 +22,9 @@
   unarchive:
     src: https://github.com/google/protobuf/releases/download/v{{ PROTOCVERSION }}/protoc-{{ PROTOCVERSION }}-linux-x86_64.zip
     dest: "{{ PROTOCPATH }}"
-    owner: "{{ ansible_user }}"
+    mode: 0755
     remote_src: yes
+  tags: testing
 
 - name: create
   template: src=env_go.sh.j2 dest=/etc/env_custom/env_go.sh mode=0755
