@@ -11,12 +11,8 @@
     src: https://releases.hashicorp.com/terraform/{{ TERRAFORM_VERSION }}/terraform_{{ TERRAFORM_VERSION }}_linux_amd64.zip
     dest: /usr/local/bin
     remote_src: True
-<<<<<<< HEAD
   tags: terra
-=======
-    validate_certs: no
-  tags: update
->>>>>>> 9fabd43a00c1fd402900b7a27f52a2238a710f86
+
 
 - name: cleanup
   file: path=/usr/local/terraform state=absent
