@@ -17,6 +17,7 @@
     src: https://storage.googleapis.com/golang/go{{ GOVERSION }}.linux-amd64.tar.gz
     dest: "{{ GOROOT }}"
     remote_src: yes
+  tags: go
 
 - name: Install protobuf
   unarchive:
