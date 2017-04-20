@@ -1,0 +1,8 @@
+---
+
+- name: check swarm mode
+  shell: docker info --format \{\{\.Swarm\.LocalNodeState\}\}
+  register: swarm_status
+
+- debug: msg={{ swarm_status.stdout }}
+  

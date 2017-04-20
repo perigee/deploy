@@ -1,18 +1,31 @@
 ---
+- name: Selinux Permissive mode
+  selinux:
+    policy: targeted
+    state: permissive
 
-- name: install packer
-  unarchive:
-    src: https://releases.hashicorp.com/packer/{{ PACKER_VERSION }}/packer_{{ PACKER_VERSION }}_linux_amd64.zip
-    dest: /usr/local/bin
-    remote_src: True
+- name: create auto group
+  group:
+    name: auto
+    state: present
 
-- name: install terraform
-  unarchive:
-    src: https://releases.hashicorp.com/terraform/{{ TERRAFORM_VERSION }}/terraform_{{ TERRAFORM_VERSION }}_linux_amd64.zip
-    dest: /usr/local/bin
-    remote_src: True
-  tags: terra
+- name: install ubiadm pkg
+  yum: name={{ item }} state=present
+  with_items:
+    - "{{ AUTO_USERS }}"
 
+- name: add users to group
+  user:
+    name: "{{ item }}"
+    shell: /bin/bash
+    groups: auto
+    append: yes
+  with_items:
+    - "{{ AUTO_USERS }}"
 
-- name: cleanup
-  file: path=/usr/local/terraform state=absent
+- name: allow auto passwordless sudo
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: '^%auto'
+    line: '%auto ALL=(ALL) NOPASSWD: ALL'
