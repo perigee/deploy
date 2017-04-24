@@ -29,22 +29,10 @@
   delegate_to: "{{ swarm_primary['ip'] }}"
   when: swarm_primary['swarm_status']!='active'
 
-#- name: update primary manager
-#  shell: docker info --format \{\{\.Swarm\.LocalNodeState\}\}
-#  register: swarm_status
-#  run_once: true
-#  delegate_to: "{{ swarm_primary['ip'] }}"
-#  when: swarm_primary['swarm_status']!='active'
-
-#- name: WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW freaking weird
-#  debug: msg={{ swarm_status}}
-
+# https://github.com/ansible/ansible/issues/23883
 - name: update swarm status needed again (WORKAROUND FOR register in delegate_to)
   shell: docker info --format \{\{\.Swarm\.LocalNodeState\}\}
   register: swarm_status
-
-#- name: WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW freaking weird
-#  debug: msg={{ swarm_status}}
 
 - name: fetch worker token
   shell: docker swarm join-token worker -q
