@@ -1,0 +1,6 @@
+---
+
+- src: https://github.com/perigee/ansible-role-go
+  name: go
+  scm: git
+  version: master
