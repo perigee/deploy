@@ -2,4 +2,4 @@
 
 init:
 	rm -rf roles/*
-	ansible-galaxy install -r rolesrepos.yml
+	ansible-galaxy install -r requirements/dev.yml
