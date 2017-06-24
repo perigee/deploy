@@ -1,3 +1,0 @@
----
-- name: add pub key
-  authorized_key: user=root key="{{ lookup ('file', 'cloudatcost.pub') }}"
